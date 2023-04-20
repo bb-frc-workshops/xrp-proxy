@@ -89,11 +89,10 @@ server.on("connection", (ws, request) => {
             currentProxyClient = null;
         });
         ws.on("message", (data, isBinary) => {
-            // TODO Filter messages
             try {
                 const obj = JSON.parse(data.toString());
                 if (obj.type && MESSAGE_TYPE_FILTER.has(obj.type)) {
-                    xrpSocket.send(data);
+                    xrpSocket.send(data.toString());
                 }
             }
             catch (err) {

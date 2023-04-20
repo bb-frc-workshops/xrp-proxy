@@ -25,9 +25,6 @@ class ReconnectingWebSocket extends EventEmitter {
         const ws = new WebSocket(this._connectionUrl);
 
         ws.on("open", () => {
-            if (connTimeout) {
-                clearTimeout(connTimeout);
-            }
             this._connected = true;
             console.log(`[CLIENT] WS Client connected to ${this._connectionUrl}`);
 
