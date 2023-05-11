@@ -9,6 +9,8 @@ const EXPECTED_URI = "/wpilibws";
 const MESSAGE_TYPE_FILTER = new Set();
 MESSAGE_TYPE_FILTER.add("DriverStation");
 MESSAGE_TYPE_FILTER.add("PWM");
+MESSAGE_TYPE_FILTER.add("Encoder");
+MESSAGE_TYPE_FILTER.add("DIO");
 
 program
     .version("1.0.0")
@@ -91,6 +93,7 @@ server.on("connection", (ws, request) => {
         ws.on("message", (data, isBinary) => {
             try {
                 const obj = JSON.parse(data.toString());
+                
                 if (obj.type && MESSAGE_TYPE_FILTER.has(obj.type)) {
                     xrpSocket.send(data.toString());
                 }
