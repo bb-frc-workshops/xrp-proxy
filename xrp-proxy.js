@@ -57,7 +57,7 @@ const proxyClientBuffer = [];
 
 function sendToProxyClient(data) {
     if (currentProxyClient !== null) {
-        currentProxyClient.send(data);
+        currentProxyClient.send(data.toString());
     }
     else {
         if (cacheXrp) {
@@ -65,6 +65,10 @@ function sendToProxyClient(data) {
         }
     }
 }
+
+xrpSocket.on("message", (data, isBinary) => {
+    sendToProxyClient(data);
+});
 
 server.on("connection", (ws, request) => {
     if (currentProxyClient !== null) {
@@ -77,7 +81,7 @@ server.on("connection", (ws, request) => {
             ws.close();
             return;
         }
-        
+
         console.log(`[SERVER] Client connected (${request.socket.remoteAddress})`);
         currentProxyClient = ws;
         ws.on("close", (code, reason) => {
@@ -93,7 +97,7 @@ server.on("connection", (ws, request) => {
         ws.on("message", (data, isBinary) => {
             try {
                 const obj = JSON.parse(data.toString());
-                
+
                 if (obj.type && MESSAGE_TYPE_FILTER.has(obj.type)) {
                     xrpSocket.send(data.toString());
                 }
